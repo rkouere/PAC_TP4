@@ -1,0 +1,45 @@
+import client
+import random
+
+
+# merci http://python.jpvweb.com/mesrecettespython/doku.php?id=pgcd_ppcm
+def pgcd(a,b):
+    """pgcd(a,b): calcul du 'Plus Grand Commun Diviseur' entre les 2 nombres entiers a et b"""
+    while b<>0:
+        r=a%b
+        a,b=b,r
+    return a
+
+# info = congru 
+# g^m  = h^r+(g^b+h^c)^s     mod p
+#      = g^xr * g^bs * h^cs  mod p
+#      = g^(xr+bs++cxs)      mod p
+# # D'apres le lemme 1
+# m    = xr+bs+cxs           mod p-1
+#      = x(r+cs) + bs        mod p-1
+# -> il faut trouver un truc qui fait r+cs = 0
+
+
+URL="http://pac.bouillaguet.info/TP4"
+link_param = "/ElGamal-forgery/PK/echallier"
+serverObj = client.Server(URL)
+
+
+param = serverObj.query(link_param)
+h = param['h'] # g^x mod p
+g = param['g'] # base du g^x
+p = param['p'] # modulo
+
+
+e = random.randint(1, p-1)
+while(pgcd(e, p-1) != 1):
+    e = random.randint(1, p-1)
+print(e)
+
+v = random.randint(1, p-1)
+
+
+
+
+print(e)
+

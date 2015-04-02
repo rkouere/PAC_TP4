@@ -1,0 +1,16 @@
+import client
+
+URL="http://pac.bouillaguet.info/TP4"
+link_param = "/shifumi-deathmatch/insert-coin/echallier"
+serverObj = client.Server(URL)
+
+gage = "/shifumi-deathmatch/move"
+
+roundStarter = "/shifumi-deathmatch/start/echallier"
+
+
+# we start the round
+serverObj.query(link_param)
+
+play = serverObj.query(roundStarter))
+

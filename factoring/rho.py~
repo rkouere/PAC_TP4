@@ -1,0 +1,20 @@
+from fractions import gcd
+
+
+def pollardrho1(n):
+    if (n % 2) == 0:
+        return 2
+    c = 1
+    x = 2
+    y = 5
+    p = lambda z: ((pow(z, 2, n))%n+c)%n
+    g = 1
+    while g==1:
+        x = p(x)
+        y = p(p(y))
+        g = gcd(abs(x - y), n)
+        if(c > n or c > limit):
+            raise Exception("We didn't find a factor")        
+        if(abs(g) == n):
+            c = c + 1
+    return g

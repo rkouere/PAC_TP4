@@ -14,7 +14,7 @@ def pollardrho1(n):
         x = p(x)
         y = p(p(y))
         g = gcd(abs(x - y), n)
-        if(c > n):
+        if(c > n | abs(g) > n):
             raise Exception("We didn't find a factor")        
         if(abs(g) == n):
             c = c + 1
@@ -25,10 +25,6 @@ def pollardrho1(n):
 def pollardrho2(n):
     if (n % 2) == 0:
         return 2
-    if (n % 3) == 0:
-        return 3
-    if (n % 5) == 0:
-        return 5
     c = 1
     x = 2
     y = 5

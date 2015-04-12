@@ -1,0 +1,5 @@
+Level 1 et 2 passé avec le rho de pollard.
+
+Ma version avec une boucle de 1000 ne marche pas (je ne coprend pas pourquoi).
+
+Par contre, pour aller un peut plus vite, lorsque je voit qu'un calcul prend trop de temps, je l'arrete et je passe au prochain en envoyant une interuption (mon programe me permet de tester un autre chiffre en appyant sur Ctrl+c pendant l'execution de la fonction de rho pollard).

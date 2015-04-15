@@ -1,6 +1,7 @@
 import client
 
 import rho
+from fractions import gcd
 
 
 # autre info
@@ -28,36 +29,30 @@ def getParam(link_param):
     idChallenge = param["id"]
     n = param["n"]
 
-def factorisationPollard(n):
-    result = []
-    try:
-        while True:
-            tmp = rho.pollardrho1(n)
-            n = n // tmp
-            print("factor = " + str(tmp))
-            # I have tried to make it go a bit faster... I noticed that number 21 (not a prime number) came very often... there is no point trying an answer with this number
-            if tmp in forbidenNumber:
-                break
-            result.append(int(tmp))
-    except:
-        print("fin")
 
-    return result
+getParam(link_param)
+result = []
+# on va incrementer le a pour essayer de trouver un nombre qui a un gdc != n ou de 1 pour la puissance de tous ses chiffres.
+# si c'est le cas, on a un diviseur !
+print(n) 
+MB = rho.level3_1(n)
+print("MB = %i" % (MB)) 
+tmp = gcd(MB, n)
+print("TMP = %i" % tmp)
+n = n//tmp
 
 
-#rho.factor(long(n), 1000)
+print(n) 
+MB = rho.level3_1(n)
+print("MB = %i" % (MB)) 
+tmp = gcd(MB, n)
+print("TMP = %i" % tmp)
+n = n//tmp
 
-# POLLARD
-while True:
-    getParam(link_param)
-    print(n)
-    result = factorisationPollard(n)
-    try:
-        reply = serverObj.query(answer, {'id': idChallenge, 'factors': result})
-        break
-    except client.ServerError as e:
-        print(result)
-        print(e)
-print("===============OK================")
-print(result)
-print(reply)
+
+print(n) 
+MB = rho.level3_1(n)
+print("MB = %i" % (MB)) 
+tmp = gcd(MB, n)
+print("TMP = %i" % tmp)
+n = n//tmp

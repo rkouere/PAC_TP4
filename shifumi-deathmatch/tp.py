@@ -1,6 +1,6 @@
 import client
-from Crypto.PublicKey import ElGamal
-from Crypto.Random import get_random_bytes
+# from Crypto.PublicKey import ElGamal
+# from Crypto.Random import get_random_bytes
 import random
 
 import random
@@ -65,68 +65,61 @@ g = 8554374974152457935702056675647522015424320461014615886562025111425640117798
 h =  50130097922389799180391308817701723888508855550182258404510513769784536981678223174962029030424075090218485420477812113902469984150055563709013560780033802910322023571589119927361158692777116556687256466766016605087414948182340063433888751144836263099269532974132746747052818230701297645947945549448181494231 
 x = 40896478988371711300850196248951225606042524670499321080240771871648153366451566792530868339996969388325342613201901949828791809476505411558944575353003174095498648803931101811437139835186068132494742577345636728037660903092441734051991461531959935545720116564357048979591502994473690252115292755373963094449
 
-myElGamal = ElGamal.ElGamalobj()
-myElGamal.p = p
-myElGamal.g = g
-myElGamal.y = h
-myElGamal.x = x
+#myElGamal = ElGamal.ElGamalobj()
+# myElGamal.p = p
+# myElGamal.g = g
+# myElGamal.y = h
+# myElGamal.x = x
 
 # # # on cree le chiffre du message avec ma clef public 
 # print("===== kripting message ========")
 #r = chiffrementElgamal(coup_nombre[1], g, h, p, p-3)
 
 index_coup = 0
-
-for i in range(100):
+cpt = 0
+while True:
     print("===============")
-    print("new round")
+    cpt += 1
+    print("new round num = " + str(cpt))
     play = serverObj.query(play_round)
     
     
     try:
         enemy_public_key = play['commitment']['PK']
-        print("TRYIN MY LUCK 1")
         g_pow_x = enemy_public_key['h']
-        g_pow_y = enemy_public_key['p']
+        g_pow_y = play['commitment']['ciphertext'][0]
         #g_pow_y = 20
         # si c'est un residu quadratique il a joue pierre
         if(((g_pow_x%2)== 1) and ((g_pow_y%2) == 1) and ((play['commitment']['ciphertext'][0]%2) == 1)):
-            index_coup = 1
-        else:
             index_coup = 0
-        print("TRYIN MY LUCK 2")
+        else:
+            index_coup = 1
 
     except:
-        print("EXCEPT")
         index_coup = 2
 
     foobar = play['foobar']
 
     # myCryptedMsg = myElGamal.encrypt(coup_nombre[index_coup], (p-3))
     myCryptedMsg = chiffrementElgamal(coup_nombre[index_coup], g, h, p, (p-3))
-    print("!!!!!!!!!!sending coup " +  coup_nom[index_coup])
-
-    print("sending commitment")
-
     commit = serverObj.query(gage, 
                              {
                                  'commitment': {
                                      'ciphertext': myCryptedMsg, 
                                      'PK': {
-                                         'h': myElGamal.y, 
-                                         'p': myElGamal.p, 
-                                         'g': myElGamal.g
+                                         'h': h, 
+                                         'p': p, 
+                                         'g': g
                                      }
                                  },
                                  'foobar': foobar
                              })
-    print("commitment sent")
     
     verification = serverObj.query(result, 
     {
         'move': coup_nom[index_coup], 
-        'k': myElGamal.p-3, 
+        'k': p-3, 
         'barfoo': commit['barfoo']
     })
-    print(verification)
+    # print(verification)
     print(serverObj.query("/shifumi-deathmatch/status/echallier"))

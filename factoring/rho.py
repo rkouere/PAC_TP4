@@ -1,3 +1,4 @@
+import random
 
 from fractions import gcd
 
@@ -113,16 +114,60 @@ def testFactor():
 
 
 # https://comeoncodeon.wordpress.com/2010/09/18/pollard-rho-brent-integer-factorization/
-# def pollardrho(n):
-#     if n%2==0:
-#         return 2
-#     x = random.randint(1, n-1)
-#     y = x
-#     c = random.randint(1, n-1)
-#     g = 1
-#     while g==1:            
-#         x = ((x*x)%n+c)%n
-#         y = ((y*y)%n+c)%n
-#         y = ((y*y)%n+c)%n
-#         g = gcd(abs(x-y),n)
-#     return g
+def pollardrho3(n):
+    if n%2==0:
+        return 2
+    x = random.randint(1, n-1)
+    y = x
+    c = random.randint(1, n-1)
+    g = 1
+    while g==1:            
+        x = ((x*x)%n+c)%n
+        y = ((y*y)%n+c)%n
+        y = ((y*y)%n+c)%n
+        g = gcd(abs(x-y),n)
+    return g
+
+
+
+
+
+def lrac(x):
+    """Racine carrée entière d'un nb entier x (méth. de Héron d'Alexandrie)"""
+    r1 = 1
+    while True:
+        r2 = (r1+x//r1)//2 
+        if abs(r1-r2) < 2:
+            if r1*r1 <= x and (r1+1)*(r1+1) > x:
+                return r1
+        r1 = r2
+
+
+
+def facteurs(n):
+    """facteurs(n): décomposition d'un nombre entier n en facteurs premiers"""
+    F = []
+    if n==1:
+        return F
+    # recherche de tous les facteurs 2 s'il y en a
+    while n>=2:
+        x,r = divmod(n,2)
+        if r!=0:
+            break
+        F.append(2)
+        n = x
+    # recherche des facteurs 1er >2
+    i=3
+    rn = lrac(n)+1
+    while i<=n:
+        if i>rn:
+            F.append(n)
+            break
+        x,r = divmod(n,i)
+        if r==0:
+            F.append(i)
+            n=x
+            rn = lrac(n)+1
+        else:
+            i += 2
+    return F

@@ -1,6 +1,7 @@
 import client
 import random
 import rho
+import lenstra
 from fractions import gcd
 from miller import *
 
@@ -65,11 +66,10 @@ def factpremiers(n):
         #     P.append(b)  # on empile b
 
 
-        a, b = pollardrho(x)  # on calcule une nouvelle décomposition
+        a, b = pollardrho(x)  # pollardrho(x)on calcule une nouvelle décomposition
 
         
-        if a==1 or b==1:
-            
+        if a==1 or b==1:            
             print("echec: x n'est pas 1er mais sa decomposition ne se fait pas")
             # on essaie une décomposition par division
             a, b = facteursdiv2(x)
@@ -133,15 +133,44 @@ def getParam(link_param):
     n = param["n"]
 
 
-getParam(link_param)
-print(param)
+def factorisationPollard(n):
+    result = []
+    try:
+        while True:
+            tmp = rho.pollardrho1(n)
+            n = n // tmp
+            print("factor = " + str(tmp))
+            # I have tried to make it go a bit faster... I noticed that number 21 (not a prime number) came very often... there is no point trying an answer with this number
+            if tmp in forbidenNumber:
+                break
+            result.append(int(tmp))
+    except:
+        print("fin")
 
+    return result
 
-P = []
+result = []
 while True:
-    tmp = brent(n)
-    P.append(tmp)
-    print(P)
-    n = n//tmp
+    getParam(link_param)
+    print(n)
+    result =  factorisationPollard(n)
+    try:
+        print("sending the reply")
+        print(result)
+        reply = serverObj.query(answer, {'id': idChallenge, 'factors': result})
+        break
+    except client.ServerError as e:
+        print(result)
+        print(e)
+print("===============OK================")
+print(result)
+print(reply)
+
+# while True:
+#     tmp = rho.pollardrho3(n)
+#     P.append(tmp)
+#     print("rest = " + str(n))
+#     print(P)
+#     n = n//tmp
 
 

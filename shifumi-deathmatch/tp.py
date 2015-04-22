@@ -1,9 +1,13 @@
 import client
 from Crypto.PublicKey import ElGamal
 from Crypto.Random import get_random_bytes
-
+import random
 
 import random
+
+
+def chiffrementElgamal(m,g,h,p,k):
+    return pow(g,k,p),(m*pow(h,k,p)%p)
 
 
 # merci http://python.jpvweb.com/mesrecettespython/doku.php?id=pgcd_ppcm
@@ -29,34 +33,6 @@ def modinv(a, m):
         raise ValueError
     return x % m
 
-
-def choixMove(a,coupD):
-    pk = a['PK']
-    p = pk['p']
-    h = pk['h']
-
-    cipher = a['ciphertext']
-    message = cipher[1]
-    gy = cipher[0]
-
-    testone=(message * modinv(coup_nombre[0],p) % p)
-    testtwo=(message * modinv(coup_nombre[1],p) % p)
-    testthree=(message * modinv(coup_nombre[2],p) % p)
-
-    puis = (h*gy)%p
-    
-    if testone==puis:
-        print("1")
-        return 0
-    if testtwo==puis:
-        print("2")
-        return 1
-    if testthree==puis:
-        print("3")
-        return 2
-    else: 
-        print("oups")
-        return random.randint(0,2)
 
 
 
@@ -109,24 +85,26 @@ for i in range(100):
     
     try:
         enemy_public_key = play['commitment']['PK']
-        print("enemy_public_key")
+        print("TRYIN MY LUCK 1")
         g_pow_x = enemy_public_key['h']
-        g_pow_y = enemy_public_key['h']
+        g_pow_y = enemy_public_key['p']
+        #g_pow_y = 20
         # si c'est un residu quadratique il a joue pierre
-        if((g_pow_x * g_pow_y)%2 == 0):
+        if(((g_pow_x%2)== 1) and ((g_pow_y%2) == 1) and ((play['commitment']['ciphertext'][0]%2) == 1)):
             index_coup = 1
         else:
-            index_coup = 2
+            index_coup = 0
+        print("TRYIN MY LUCK 2")
 
     except:
-        index_coup = random.randint(0,2)
-
-    # index_coup = 2
-    print("!!!!!!!!!!sending coup " +  coup_nom[index_coup])
+        print("EXCEPT")
+        index_coup = 2
 
     foobar = play['foobar']
 
-    myCryptedMsg = myElGamal.encrypt(coup_nombre[index_coup], (p-3))
+    # myCryptedMsg = myElGamal.encrypt(coup_nombre[index_coup], (p-3))
+    myCryptedMsg = chiffrementElgamal(coup_nombre[index_coup], g, h, p, (p-3))
+    print("!!!!!!!!!!sending coup " +  coup_nom[index_coup])
 
     print("sending commitment")
 

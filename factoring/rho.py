@@ -74,7 +74,7 @@ def findHighestEntier(n, index):
 
 
 def minute_passed(oldepoch):
-    return time.time() - oldepoch >= 60*6
+    return time.time() - oldepoch >= 60*15
 
 
 def pollardrho1(n, oldepoch):

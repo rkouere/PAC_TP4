@@ -1,7 +1,9 @@
-
 import random
 import time
 from fractions import gcd
+
+
+
 
 prime = []
 
@@ -20,7 +22,22 @@ def level3_1(n):
     return u[i+1]
 
 
-# 
+def facteursdiv2(n):
+    """Décomposition par division de n (entier) en 2 facteurs quelconques"""
+    pp = [2, 3, 5, 7, 11]
+    racn = lrac(n)+1  # lrac(n) = racine carrée entière de n
+    for p in pp:
+        if p>racn:
+            return [n, 1]  # n est premier
+        if n%p == 0:
+            return [p, n//p]  # on a trouvé une décomposition
+    p = pp[-1] + 2
+    while p <= racn:
+        if n%p == 0:
+            return [p, n//p]  # on a trouvé une décomposition
+        p += 2
+    # si on arrive ici, n est premier
+    return [n, 1] 
 
 
 def findHighestEntier(n, index):
@@ -57,11 +74,10 @@ def findHighestEntier(n, index):
 
 
 def minute_passed(oldepoch):
-    return time.time() - oldepoch >= 60*10
+    return time.time() - oldepoch >= 60*6
 
 
 def pollardrho1(n, oldepoch):
-    
     if (n % 2) == 0:
         return 2
     c = 1
@@ -88,7 +104,7 @@ def pollardrho1(n, oldepoch):
 
 # 1000 iterations pour racourcir le calcul du pgcd
 # ne marche pas
-def pollardrho2(n):
+def pollardrho2(n, oldepoch):
     if (n % 2) == 0:
         return 2
     c = 1
@@ -102,14 +118,47 @@ def pollardrho2(n):
         for i in range(10):
             x = p(x)
             y = p(p(y))
-            tmp = abs(x - y) * tmp
+            x2 = p(x)
+            y2 = p(p(y))
+            tmp = tmp * (abs(x - y) * abs(x2 - y2))
         g = gcd(tmp, n)
         if(c > n):
             raise Exception("We didn't find a factor")        
         if(abs(g) == n):
             c = c + 1
-    return g
+    return [g, n//g]
 
+#############################################################################
+def pollardrho4(n):
+    """Factorisation d'un nombre entier décomposable (méth. rho de pollard)"""   
+    f = lambda z: z*z+1
+    x, y, d = 2, 2, 1
+    while d==1:
+        x = f(x) % n
+        y = f(f(y)) % n
+        d = gcd(x-y, n)
+    return [d, n//d]
+
+def pollardrho5(n, oldepoch):
+    """Factorisation d'un nombre entier décomposable (méth. rho de pollard)"""   
+    f = lambda z: z*z+1
+    x, y, d = 2, 2, 1
+    tmp = 1
+    while d==1:
+        if minute_passed(oldepoch):
+            print("TROP LONNNNNNNNNNNNNNNNNNNG")
+            raise Exception("We didn't find a factor")        
+
+        for i in range(100):
+            x = f(x) % n
+            y = f(f(y)) % n
+            x2 = f(x) % n
+            y2 = f(f(y)) % n
+            tmp = (x-y)*(x2-y2)
+            x = x2
+            y = y2
+        d = gcd(tmp, n)
+    return [d, n//d]
 
 
 def testFactor():

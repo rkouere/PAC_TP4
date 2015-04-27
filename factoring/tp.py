@@ -4,7 +4,7 @@ import rho
 from fractions import gcd
 import time
 import sys
-
+from miller_rabin import *
 
 # autre info
 # https://github.com/ralphleon/Python-Algorithms/blob/master/Cryptology/pollard.py
@@ -12,12 +12,9 @@ import sys
 forbidenNumber = []
 forbidenNumber.append(21)
 
-level = "3"
+level = sys.argv[1]
 
-if(len(sys.argv) == 2):
-    classGet = sys.argv[1]
-else:
-    classGet = "C"
+classGet = sys.argv[2]
 
 print("Dealing with difficulti " + classGet)
 
@@ -44,18 +41,46 @@ def factorisationPollard(n, oldepoch):
     result = []
     try:
         while True:
-            tmp = rho.pollardrho1(n, oldepoch)
+            tmp = rho.pollardrho2(n, oldepoch)
             n = n // tmp
             print("factor = " + str(tmp))
             # I have tried to make it go a bit faster... I noticed that number 21 (not a prime number) came very often... there is no point trying an answer with this number
             if tmp in forbidenNumber:
                 print("forbidden number % i" % tmp)
                 break
-            result.append(int(tmp))
+            if not is_probable_prime(tmp):
+                
+                result.append(int(tmp))
     except:
         print("fin")
 
     return result
+
+
+def factpremiers(n, oldepoch):
+    """liste des facteurs premiers de n, avec la fonction 'a, b = decomp(n)' """
+    R = []  # liste des facteurs premiers trouvés
+    P = [n]  # pile de calcul
+    try:
+        while P!=[]:
+            x = P.pop(-1)  # lecture et dépilage de la dernière valeur empilée
+            if is_probable_prime(x):
+                print(x)
+                R.append(x)  # on a trouvé un facteur 1er => on ajoute à la liste
+            else:
+                a, b = rho.pollardrho5(x, oldepoch)  # on calcule une nouvelle décomposition
+                if a==1 or b==1:
+                    # echec: x n'est pas 1er mais sa decomposition ne se fait pas
+                    # on essaie une décomposition par division
+                    a, b = rho.facteursdiv2(x)
+                print(a)
+                P.append(a)  # on empile a
+                P.append(b)  # on empile b
+        R.sort()
+        return R
+    except:
+        print("fin")
+
 
 
 result = []
@@ -65,7 +90,7 @@ while True:
     # utilisé pour arreter la fonction au bout de x minutes
     print(n)
     oldepoch = time.time()
-    result =  factorisationPollard(n, oldepoch)
+    result =  factpremiers(n, oldepoch)
     try:
         print("sending the reply")
         print(result)
